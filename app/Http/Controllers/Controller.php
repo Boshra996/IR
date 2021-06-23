@@ -10,6 +10,7 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Response;
 
+
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
@@ -29,9 +30,14 @@ class Controller extends BaseController
 
     public function search(Request $request)
     {
-
         $data = [];
         $query = $request->input("query");
+        $spellchecker = new SpellChecker();
+        if ($query !== "") {
+            $suggestedQuery = $spellchecker->spellCheck($query);
+            if ($suggestedQuery)
+                $data["suggestedQuery"] = $suggestedQuery;
+        }
         $queryProcessor = new QueryProcessor();
         $result =  $queryProcessor->indexingQuery($query);
         $data["query"] = $query;

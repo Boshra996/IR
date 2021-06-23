@@ -21,7 +21,8 @@
     <a href="{{ url('/') }}"
         style="margin:  10px;color: #c0d0d8;font-size:  18px;font-family:  serif;text-underline-position:  none;padding:  0px;/* margin-bottom:  1000px; */">Home</a>
     <a href="{{ url('/file') }}"
-        style="border-bottom: 0px; margin:  10px;color: #c0d0d8;font-size:  18px;font-family:  serif;text-underline-position:  none;padding:  0px;/* margin-bottom:  1000px; */">Add File</a>
+        style="border-bottom: 0px; margin:  10px;color: #c0d0d8;font-size:  18px;font-family:  serif;text-underline-position:  none;padding:  0px;/* margin-bottom:  1000px; */">Add
+        File</a>
 
     <div id="page">
 
@@ -32,7 +33,19 @@
                     <div class="form-group col-md-12">
                         <label for="query" class="col-form-label">Search</label>
                         <input id="searchField" class="form-control" type="text" name="query"
-                            value="{{isset($data['query'])? $data['query'] : '' }}" placeholder="Writy your query here" />
+                            value="{{ isset($data['query']) ? $data['query'] : '' }}"
+                            placeholder="Writy your query here" />
+                        @isset($data['suggestedQuery'])
+                            <div style="margin-top: 10px">
+                                <span style="color: red">Did you mean</span>
+
+                                @foreach ($data['suggestedQuery'] as $suggestion)
+
+                                    <a href="/search?query={!! $suggestion['new_query'] !!}" style="color: white">
+                                        {!! $suggestion['new_query_html'] !!}</a>
+                                @endforeach
+                            </div>
+                        @endisset
                     </div>
 
                     <div class="col-md-12">
@@ -47,7 +60,7 @@
                 @foreach ($data['result'] as $obj)
                     <div class="row">
                         <div class="webResult">
-                            <h2><a href="{{ $obj['doc']['name'] }}" , target="_blank"> Document :
+                            <h2><a href="corpus/{{ $obj['doc']['name'] }}" , target="_blank"> Document :
                                     {{ $obj['doc']['name'] }}</a>
                             </h2>
                             <p>Weight : {{ $obj['sim'] }}</p>
@@ -61,7 +74,7 @@
                         <h2 class="help-block"> No data found</h2>
                     </div>
                 </div>
-             @endempty
+            @endempty
 
         @endisset
 
