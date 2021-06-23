@@ -13,17 +13,19 @@ class Indexer
     protected $tokenizer;
     protected $removalStopWords;
     protected $stemmer;
+    protected $limmatizer;
 
 
     public function __construct()
     {
-        set_time_limit(60 * 10);
+        set_time_limit(60 * 30);
         // ini_set("max_execution_time", 1000 * 10 * 24);
         ini_set("memory_limit", "-1");
 
         $this->tokenizer   = new Tokenizer();
         $this->removalStopWords = new StopWords();
         $this->stemmer = new Stemmer();
+        $this->limmatizer = new  Lemmatizer() ;
     }
 
     public function initDB()
@@ -57,7 +59,9 @@ class Indexer
         $content = file_get_contents($filePath);
         $tokens = $this->tokenizer->tokenize($content);
         $tokensWithOutStopWords =  $this->removalStopWords->removeStopWords($tokens);
-        $stemmedTokens = $this->stemmer->stem($tokensWithOutStopWords);
+        $lemmatizeToken = $this->limmatizer->Lemmatize($tokensWithOutStopWords);
+        $stemmedTokens = $this->stemmer->stem($lemmatizeToken);
+
 
         //calcuate TF weight of word
         $tfArray = [];

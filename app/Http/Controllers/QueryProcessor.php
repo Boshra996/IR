@@ -12,6 +12,8 @@ class QueryProcessor
     protected $tokenizer;
     protected $removalStopWords;
     protected $stemmer;
+    protected $limmatizer;
+
 
     public function __construct()
     {
@@ -22,6 +24,7 @@ class QueryProcessor
         $this->tokenizer   = new Tokenizer();
         $this->removalStopWords = new StopWords();
         $this->stemmer = new Stemmer();
+        $this->limmatizer = new Lemmatizer();
     }
 
 
@@ -32,7 +35,9 @@ class QueryProcessor
         $content = $query;
         $tokens = $this->tokenizer->tokenize($content);
         $tokensWithOutStopWords =  $this->removalStopWords->removeStopWords($tokens);
-        $stemmedTokens = $this->stemmer->stem($tokensWithOutStopWords);
+        $lemmatizeToken = $this->limmatizer->Lemmatize($tokensWithOutStopWords);
+        $stemmedTokens = $this->stemmer->stem($lemmatizeToken);
+
 
         //calcuate TF weight of word
         $tfArray = [];
