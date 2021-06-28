@@ -13,6 +13,7 @@ class QueryProcessor
     protected $removalStopWords;
     protected $stemmer;
     protected $limmatizer;
+    protected $shortcuts;
 
 
     public function __construct()
@@ -25,6 +26,7 @@ class QueryProcessor
         $this->removalStopWords = new StopWords();
         $this->stemmer = new Stemmer();
         $this->limmatizer = new Lemmatizer();
+        $this->shortcuts = new  Shortcuts();
     }
 
 
@@ -34,15 +36,22 @@ class QueryProcessor
 
         $content = $query;
         $tokens = $this->tokenizer->tokenize($content);
-        $tokensWithOutStopWords =  $this->removalStopWords->removeStopWords($tokens);
-        $lemmatizeToken = $this->limmatizer->Lemmatize($tokensWithOutStopWords);
-        $stemmedTokens = $this->stemmer->stem($lemmatizeToken);
 
+        $tokensWithoutShortcuts = $this->shortcuts->convertShortucts($tokens);
 
+        $tokensWithoutStopWords =  $this->removalStopWords->removeStopWords($tokensWithoutShortcuts);
+        // $lemmatizeToken = $this->limmatizer->Lemmatize($tokensWithOutStopWords);
+        $stemmedTokens = $this->stemmer->stem($tokensWithoutStopWords);
+        // var_dump($tokensWithoutShortcuts);
+        $finalTokens = $stemmedTokens;
+
+        // var_dump("-----------------------------------");
+        // var_dump($finalTokens);
+        // die();
         //calcuate TF weight of word
         $tfArray = [];
         $maxFreq = 0;
-        foreach ($stemmedTokens as $token) {
+        foreach ($finalTokens as $token) {
             if (!isset($tfArray[$token]))
                 $tfArray[$token] = 1;
             else
@@ -58,6 +67,7 @@ class QueryProcessor
         $queryLength = $this->queryLength($weightsQuery);
         $simArray = $this->setSimalirty($weightsQuery, $queryLength);
         $array = collect($simArray)->sortBy('sim')->reverse()->toArray();
+        $array = array_slice($array, 0, 15);
         return $array;
     }
 

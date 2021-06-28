@@ -35,14 +35,7 @@ class SpellChecker
                     }
                     return $result;
                 }
-                // print_r([
-                //     $misspelling->getWord(), // 'mispell'
-                //     // // $misspelling->getLineNumber(), // '1'
-                //     // $misspelling->getOffset(), // '0'
-                //     array_slice($misspelling->getSuggestions(), 0, $limit), // ['misspell', ...]
-                //     // $misspelling->getContext(), // ['from' => 'aspell spellchecker']
-                // ]);
-                // print('----');
+               
 
             }
             return [[

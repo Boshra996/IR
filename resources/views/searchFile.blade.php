@@ -30,7 +30,7 @@
         <div class="row">
             <form id="searchForm" method="GET" action="/search">
                 <fieldset>
-                    <div class="form-group col-md-12">
+                    <div class="form-group col-md-9">
                         <label for="query" class="col-form-label">Search</label>
                         <input id="searchField" class="form-control" type="text" name="query"
                             value="{{ isset($data['query']) ? $data['query'] : '' }}"
@@ -47,10 +47,23 @@
                             </div>
                         @endisset
                     </div>
+                    <div class="form-group col-md-3">
+                        <label for="query" class="col-form-label">Query Number </label>
+                        <input id="numberQueryField" class="form-control" type="text" name="queryNumber"
+                            value="{{ isset($data['queryNumber']) ? $data['queryNumber'] : '' }}"
+                            placeholder="Writy query number here" />
+                    </div>
 
-                    <div class="col-md-12">
+                    <div class="col-md-9">
                         <input type="submit" value="Search" class="btn btn-secondary" />
                     </div>
+
+                    @isset($data['AUC'])
+                        <div class="col-md-3">
+                            <span>AUC is : </span> {{ $data['AUC'] }}
+                        </div>
+                    @endisset
+
                 </fieldset>
             </form>
         </div>

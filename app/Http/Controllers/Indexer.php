@@ -14,6 +14,7 @@ class Indexer
     protected $removalStopWords;
     protected $stemmer;
     protected $limmatizer;
+    protected $shortcuts;
 
 
     public function __construct()
@@ -25,7 +26,8 @@ class Indexer
         $this->tokenizer   = new Tokenizer();
         $this->removalStopWords = new StopWords();
         $this->stemmer = new Stemmer();
-        $this->limmatizer = new  Lemmatizer() ;
+        $this->limmatizer = new  Lemmatizer();
+        $this->shortcuts = new  Shortcuts();
     }
 
     public function initDB()
@@ -58,15 +60,16 @@ class Indexer
     {
         $content = file_get_contents($filePath);
         $tokens = $this->tokenizer->tokenize($content);
-        $tokensWithOutStopWords =  $this->removalStopWords->removeStopWords($tokens);
-        $lemmatizeToken = $this->limmatizer->Lemmatize($tokensWithOutStopWords);
-        $stemmedTokens = $this->stemmer->stem($lemmatizeToken);
-
+        $tokensWithoutShortcuts = $this->shortcuts->convertShortucts($tokens);
+        $tokensWithoutStopWords =  $this->removalStopWords->removeStopWords($tokensWithoutShortcuts);
+        // $lemmatizeToken = $this->limmatizer->Lemmatize($tokensWithOutStopWords);
+        $stemmedTokens = $this->stemmer->stem($tokensWithoutStopWords);
+        $finalTokens = $stemmedTokens;
 
         //calcuate TF weight of word
         $tfArray = [];
         $maxFreq = 0;
-        foreach ($stemmedTokens as $token) {
+        foreach ($finalTokens as $token) {
             if (!isset($tfArray[$token]))
                 $tfArray[$token] = 1;
             else

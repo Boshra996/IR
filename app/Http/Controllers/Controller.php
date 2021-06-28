@@ -18,6 +18,7 @@ class Controller extends BaseController
 
     public function __construct()
     {
+
         // set_time_limit(60 * 10);
         // ini_set("max_execution_time", 1000 * 10 * 24);
         // ini_set("memory_limit", "-1");
@@ -32,6 +33,7 @@ class Controller extends BaseController
     {
         $data = [];
         $query = $request->input("query");
+        $queryNumber = $request->input("queryNumber");
         $spellchecker = new SpellChecker();
         if ($query !== "") {
             $suggestedQuery = $spellchecker->spellCheck($query);
@@ -42,6 +44,12 @@ class Controller extends BaseController
         $result =  $queryProcessor->indexingQuery($query);
         $data["query"] = $query;
         $data["result"] =  $result;
+        $data["queryNumber"] =  $queryNumber;
+        if ($queryNumber) {
+            $relevantCalculator = new RelevantCalculator();
+            $f = $relevantCalculator->calculate($result, $queryNumber);
+            $data["AUC"] =  $f;
+        }
         return Response::view('searchFile', compact("data"));
     }
 

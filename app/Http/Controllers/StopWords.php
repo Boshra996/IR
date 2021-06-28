@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-
+//2
 class StopWords
 {
     public  $stopWords = [
